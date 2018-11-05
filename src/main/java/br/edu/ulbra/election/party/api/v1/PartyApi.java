@@ -32,7 +32,7 @@ public class PartyApi {
     @GetMapping("/{partyId}")
     @ApiOperation(value = "Get party by Id")
     public PartyOutput getById(@PathVariable Long partyId) {
-        return new PartyOutput();
+        return partyService.getById(partyId);
     }
 
     @PostMapping("/")
@@ -44,12 +44,12 @@ public class PartyApi {
     @PutMapping("/{partyId}")
     @ApiOperation(value = "Update party")
     public PartyOutput update(@PathVariable Long partyId, @RequestBody PartyInput partyInput) {
-        return new PartyOutput();
+        return partyService.update(partyId, partyInput);
     }
 
     @DeleteMapping("/{partyId}")
     @ApiOperation(value = "Delete party")
     public GenericOutput delete(@PathVariable Long partyId) {
-        return new GenericOutput("OK");
+        return partyService.delete(partyId);
     }
 }
