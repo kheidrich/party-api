@@ -3,9 +3,12 @@ package br.edu.ulbra.election.party.api.v1;
 import br.edu.ulbra.election.party.input.v1.PartyInput;
 import br.edu.ulbra.election.party.output.v1.GenericOutput;
 import br.edu.ulbra.election.party.output.v1.PartyOutput;
+import br.edu.ulbra.election.party.service.PartyService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +16,17 @@ import java.util.List;
 @RequestMapping("/v1/party")
 public class PartyApi {
 
+    private PartyService partyService;
+
+    @Autowired
+    public PartyApi(PartyService partyService) {
+        this.partyService = partyService;
+    }
+
     @GetMapping("/")
     @ApiOperation(value = "Get parties List")
     public List<PartyOutput> getAll(){
-        return new ArrayList<>();
+        return partyService.getAll();
     }
 
     @GetMapping("/{partyId}")
