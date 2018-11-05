@@ -1,5 +1,7 @@
 package br.edu.ulbra.election.party.service;
 
+import br.edu.ulbra.election.party.input.v1.PartyInput;
+import br.edu.ulbra.election.party.model.Party;
 import br.edu.ulbra.election.party.output.v1.PartyOutput;
 import br.edu.ulbra.election.party.repository.PartyRepository;
 import org.modelmapper.ModelMapper;
@@ -27,4 +29,10 @@ public class PartyService {
         return modelMapper.map(partyRepository.findAll(), partyOutputListType);
     }
 
+    public PartyOutput create(PartyInput partyInput){
+        Party party = modelMapper.map(partyInput, Party.class);
+        party = partyRepository.save(party);
+
+        return  modelMapper.map(party, PartyOutput.class);
+    }
 }

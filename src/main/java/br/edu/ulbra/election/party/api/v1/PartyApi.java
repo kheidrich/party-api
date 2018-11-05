@@ -25,31 +25,31 @@ public class PartyApi {
 
     @GetMapping("/")
     @ApiOperation(value = "Get parties List")
-    public List<PartyOutput> getAll(){
+    public List<PartyOutput> getAll() {
         return partyService.getAll();
     }
 
     @GetMapping("/{partyId}")
     @ApiOperation(value = "Get party by Id")
-    public PartyOutput getById(@PathVariable Long partyId){
+    public PartyOutput getById(@PathVariable Long partyId) {
         return new PartyOutput();
     }
 
     @PostMapping("/")
     @ApiOperation(value = "Create new party")
-    public PartyOutput create(@RequestBody PartyInput partyInput){
-        return new PartyOutput();
+    public PartyOutput create(@RequestBody PartyInput partyInput) {
+        return partyService.create(partyInput);
     }
 
     @PutMapping("/{partyId}")
     @ApiOperation(value = "Update party")
-    public PartyOutput update(@PathVariable Long partyId, @RequestBody PartyInput partyInput){
+    public PartyOutput update(@PathVariable Long partyId, @RequestBody PartyInput partyInput) {
         return new PartyOutput();
     }
 
     @DeleteMapping("/{partyId}")
     @ApiOperation(value = "Delete party")
-    public GenericOutput delete(@PathVariable Long partyId){
+    public GenericOutput delete(@PathVariable Long partyId) {
         return new GenericOutput("OK");
     }
 }

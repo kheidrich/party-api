@@ -16,7 +16,7 @@ public class Party {
     private String name;
 
     @Column(nullable = false)
-    private Long number;
+    private Integer number;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class Party {
         this.name = name;
     }
 
-    public Long getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(Long number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 }
