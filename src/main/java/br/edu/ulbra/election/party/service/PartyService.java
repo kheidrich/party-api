@@ -38,6 +38,7 @@ public class PartyService {
     }
 
     public PartyOutput create(PartyInput partyInput) {
+    	validateInput(partyInput);
         Party party = modelMapper.map(partyInput, Party.class);
         party = partyRepository.save(party);
 
@@ -59,6 +60,8 @@ public class PartyService {
         if (partyId == null)
             throw new GenericOutputException(MESSAGE_INVALID_ID);
 
+    	validateInput(partyInput);
+        
         Party party = partyRepository.findById(partyId).orElse(null);
         if (party == null)
             throw new GenericOutputException(MESSAGE_PARTY_NOT_FOUND);
@@ -83,4 +86,33 @@ public class PartyService {
 
         return new GenericOutput(MESSAGE_PARTY_DELETED);
     }
+
+    private void validateInput(PartyInput input) {
+    	
+    	validateCode(input.getCode());
+    	validateNumber(input.getNumber());
+    	
+        if (input.getCode() != null && (input.getCode().isEmpty() || input.getCode().length() > 10))
+            throw new GenericOutputException("Invalid code");
+
+        if (input.getName() != null && (input.getName().isEmpty() || input.getName().length() < 5))
+            throw new GenericOutputException("Invalid name");
+
+        if (input.getNumber() != null && input.getNumber() != 2)
+            throw new GenericOutputException("Invalid number");
+    }
+    
+    public void validateCode(String code) {
+    	Party party = modelMapper.map(partyRepository.findAll(), Party.class);    
+    	if(party.getCode().equals(code))
+    			throw new GenericOutputException("Invalid code");		
+    }
+    
+    public void validateNumber(Integer number) {
+    	Party party = modelMapper.map(partyRepository.findAll(), Party.class);    
+    	if(party.getNumber().equals(number))
+    			throw new GenericOutputException("Invalid number");		
+    }
+
+
 }
