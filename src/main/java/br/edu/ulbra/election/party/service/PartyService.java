@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class PartyService {
     }
 
     public PartyOutput create(PartyInput partyInput) {
-    	validateInput(partyInput);
+        validateInput(partyInput);
         Party party = modelMapper.map(partyInput, Party.class);
         party = partyRepository.save(party);
 
@@ -60,8 +61,8 @@ public class PartyService {
         if (partyId == null)
             throw new GenericOutputException(MESSAGE_INVALID_ID);
 
-    	validateInput(partyInput);
-        
+        validateInput(partyInput);
+
         Party party = partyRepository.findById(partyId).orElse(null);
         if (party == null)
             throw new GenericOutputException(MESSAGE_PARTY_NOT_FOUND);
@@ -88,30 +89,45 @@ public class PartyService {
     }
 
     private void validateInput(PartyInput input) {
-    	
-    	validateCode(input.getCode());
-    	validateNumber(input.getNumber());
-    	
-        if (input.getCode() != null && (input.getCode().isEmpty() || input.getCode().length() > 10))
+        if (input.getCode() == null
+                || (input.getCode().isEmpty()
+                || input.getCode().length() > 10)
+                || !validateCode(input.getCode()))
             throw new GenericOutputException("Invalid code");
 
-        if (input.getName() != null && (input.getName().isEmpty() || input.getName().length() < 5))
+        if (input.getName() == null
+                || (input.getName().isEmpty()
+                || input.getName().length() < 5))
             throw new GenericOutputException("Invalid name");
 
-        if (input.getNumber() != null && input.getNumber() != 2)
+        if (input.getNumber() == null
+                || input.getNumber().toString().length() != 2
+                || !validateNumber(input.getNumber()))
             throw new GenericOutputException("Invalid number");
     }
-    
-    public void validateCode(String code) {
-    	Party party = modelMapper.map(partyRepository.findAll(), Party.class);    
-    	if(party.getCode().equals(code))
-    			throw new GenericOutputException("Invalid code");		
+
+    public boolean validateCode(String code) {
+        Type partyOutputListType = new TypeToken<List<Party>>() {
+        }.getType();
+
+        List<Party> parties = modelMapper.map(partyRepository.findAll(), partyOutputListType);
+        for (Party party : parties)
+            if (party.getCode().equals(code))
+                return false;
+
+        return true;
     }
-    
-    public void validateNumber(Integer number) {
-    	Party party = modelMapper.map(partyRepository.findAll(), Party.class);    
-    	if(party.getNumber().equals(number))
-    			throw new GenericOutputException("Invalid number");		
+
+    public boolean validateNumber(Integer number) {
+        Type partyOutputListType = new TypeToken<List<Party>>() {
+        }.getType();
+
+        List<Party> parties = modelMapper.map(partyRepository.findAll(), partyOutputListType);
+        for (Party party : parties)
+            if (party.getNumber().equals(number))
+                return false;
+
+        return true;
     }
 
 
