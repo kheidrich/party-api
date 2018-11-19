@@ -4,6 +4,7 @@ package br.edu.ulbra.election.party.service;
 import br.edu.ulbra.election.party.exception.GenericOutputException;
 import br.edu.ulbra.election.party.input.v1.PartyInput;
 import br.edu.ulbra.election.party.model.Party;
+import br.edu.ulbra.election.party.output.v1.CandidateOutput;
 import br.edu.ulbra.election.party.output.v1.GenericOutput;
 import br.edu.ulbra.election.party.output.v1.PartyOutput;
 import br.edu.ulbra.election.party.repository.PartyRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 public class PartyService {
     private final PartyRepository partyRepository;
     private final ModelMapper modelMapper;
+    private final CandidateClientService candidateClientService;
 
     private static final String MESSAGE_INVALID_ID = "Invalid id";
     private static final String MESSAGE_PARTY_NOT_FOUND = "Party not found";
@@ -83,6 +85,9 @@ public class PartyService {
         if (election == null)
             throw new GenericOutputException(MESSAGE_PARTY_NOT_FOUND);
 
+        if (this.partyHasCandidate(partyId))
+            throw new GenericOutputException("Cannot delete party");
+
         partyRepository.delete(election);
 
         return new GenericOutput(MESSAGE_PARTY_DELETED);
@@ -128,6 +133,12 @@ public class PartyService {
                 return false;
 
         return true;
+    }
+
+    private boolean partyHasCandidate(Long partyId) {
+        List<CandidateOutput> candidates = this.candidateClientService.getByPartyId(partyId);
+
+        return candidates.size() > 0;
     }
 
 
